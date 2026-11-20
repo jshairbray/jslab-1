@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/JsLab1.App/JsLab1.App.csproj" />
+  </Folder>
+</Solution>
