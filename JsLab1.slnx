@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/JsLab1.App/JsLab1.App.csproj" />
+    <Project Path="src/JsLab1.Greetings/JsLab1.Greetings.csproj" />
   </Folder>
 </Solution>

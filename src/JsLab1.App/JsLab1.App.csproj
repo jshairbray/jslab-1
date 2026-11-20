@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="3.0.10" />
+    <PackageReference Include="JsLab1.Greetings" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
