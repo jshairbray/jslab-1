@@ -24,3 +24,29 @@ jobs:
       - run: dotnet publish src/JsLab1.App -c Release --no-build -o publish
       - run: docker build -t jslab-1:ci .
       - run: docker run --rm jslab-1:ci | tee out.txt && grep -q "from your own NuGet package" out.txt
+
+  push:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      NuGetPackageSourceCredentials_gitlab: Username=${{ secrets.GITLAB_NUGET_USER }};Password=${{ secrets.GITLAB_NUGET_TOKEN }}
+      IMAGE: us-east1-docker.pkg.dev/js-lab1/jslab-1/jslab-1
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet publish src/JsLab1.App -c Release -o publish
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/610307338747/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: gha-pusher@js-lab1.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
+      - run: |
+          docker build -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .
+          docker push --all-tags "$IMAGE"
