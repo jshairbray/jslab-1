@@ -21,3 +21,6 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore -c Release
       - run: dotnet run --project src/JsLab1.App -c Release --no-build
+      - run: dotnet publish src/JsLab1.App -c Release --no-build -o publish
+      - run: docker build -t jslab-1:ci .
+      - run: docker run --rm jslab-1:ci | tee out.txt && grep -q "from your own NuGet package" out.txt
